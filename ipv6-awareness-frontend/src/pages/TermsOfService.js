@@ -140,10 +140,10 @@ function TermsOfService() {
               </p>
               <div className="space-y-2">
                 <p className="text-gray-600 dark:text-gray-300">
-                  Email: legal@ipv6forum.org
+                  Email: contact@ipv6et.org
                 </p>
                 <p className="text-gray-600 dark:text-gray-300">
-                  Address: IPv6 Forum Headquarters, 123 IPv6 Street, Internet City, IC 12345
+                  Address: Addis Ababa, Ethiopia
                 </p>
               </div>
             </motion.div>
