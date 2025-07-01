@@ -609,13 +609,7 @@ function Resources() {
                 </div>
               </div>
 
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center">
-                  <StarIcon className="h-5 w-5 text-yellow-400 mr-1" />
-                  <span className="text-sm text-gray-600 dark:text-dark-text-secondary">
-                    {resource.rating || 0} ({resource.downloads || 0} downloads)
-                  </span>
-                </div>
+              <div className="mt-4 flex items-center justify-end">
                 {resource.file_url && (
                   <a
                     href={resource.file_url}

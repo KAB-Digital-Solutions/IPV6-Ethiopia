@@ -83,3 +83,26 @@
            dark:text-dark-text-primary;
   }
 }
+
+/* Custom date input calendar icon for dark mode */
+@media (prefers-color-scheme: dark) {
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+  input[type="date"]::-webkit-input-placeholder {
+    color: #E0E0E0;
+  }
+  input[type="date"]::-moz-placeholder {
+    color: #E0E0E0;
+  }
+  input[type="date"]:-ms-input-placeholder {
+    color: #E0E0E0;
+  }
+  input[type="date"]::placeholder {
+    color: #E0E0E0;
+  }
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}

@@ -476,33 +476,40 @@ function AboutIPv6() {
             <div className="absolute left-1/2 h-full w-0.5 bg-gray-200 dark:bg-gray-700 transform -translate-x-1/2 hidden md:block"></div>
             
             <div className="space-y-8 sm:space-y-12">
-              {milestones.map((milestone, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="relative pl-12 sm:pl-16"
-                >
-                  <div className="absolute left-0 sm:left-1/2 sm:-ml-8 top-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[#00C389]/10 flex items-center justify-center text-[#00C389] dark:bg-gray-700 dark:text-white">
-                    {milestone.icon}
-                  </div>
-                  <div className="ml-0 sm:ml-8 text-left">
-                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-100 dark:bg-gray-800 dark:border-gray-700">
-                      <div className="text-sm font-medium text-[#00C389] mb-1">
-                        {milestone.year}
-                      </div>
-                      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 dark:text-white">
-                        {milestone.title}
-                      </h3>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
-                        {milestone.description}
-                      </p>
+              {milestones.map((milestone, index) => {
+                const isRight = index % 2 === 0;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ delay: index * 0.1 }}
+                    className={`relative flex flex-col md:flex-row md:items-center ${isRight ? 'md:justify-start' : 'md:justify-end'} group`}
+                  >
+                    {/* Icon */}
+                    <div className={`z-10 absolute md:static left-0 right-0 mx-auto md:mx-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[#00C389]/10 flex items-center justify-center text-[#00C389] dark:bg-gray-700 dark:text-white
+                      ${isRight ? 'md:order-1 md:left-1/2 md:-ml-8' : 'md:order-2 md:right-1/2 md:-mr-8'}`}
+                    >
+                      {milestone.icon}
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                    {/* Card */}
+                    <div className={`mt-16 md:mt-0 md:w-1/2 ${isRight ? 'md:pr-12 md:order-2 md:text-left' : 'md:pl-12 md:order-1 md:text-right'}`}>
+                      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+                        <div className="text-sm font-medium text-[#00C389] mb-1">
+                          {milestone.year}
+                        </div>
+                        <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 dark:text-white">
+                          {milestone.title}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
+                          {milestone.description}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </div>
