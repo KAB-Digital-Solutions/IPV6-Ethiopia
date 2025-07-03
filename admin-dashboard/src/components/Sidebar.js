@@ -43,7 +43,7 @@ function Sidebar({ session, onClose }) {
       <div className="flex flex-col items-center justify-center h-24 px-4 border-b border-gray-200 dark:border-dark-border">
         <div className="flex items-center space-x-2">
           <img
-            src="/logo.jpg"
+            src="/admin/logo.jpg"
             alt="Logo"
             className="h-14 sm:h-16 w-auto"
           />

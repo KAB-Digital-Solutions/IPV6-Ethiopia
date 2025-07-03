@@ -135,7 +135,7 @@ const Login = () => {
         <div>
           <img
             className="mx-auto h-16 w-auto"
-            src="/logo.jpg"
+            src="/admin/logo.jpg"
             alt="IPv6 Awareness"
           />
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
