@@ -52,7 +52,7 @@ function GetInvolved() {
         },
         {
           text: 'Learn More',
-          link: '/about-ipv6',
+          link: '/AboutIPv6',
           external: false
         }
       ]
@@ -64,7 +64,7 @@ function GetInvolved() {
       actions: [
         {
           text: 'About IPv6',
-          link: '/about-ipv6',
+          link: '/AboutIPv6',
           external: false
         },
         {
@@ -132,7 +132,7 @@ function GetInvolved() {
                 Test Your IPv6 <FaArrowRight className="ml-2" />
               </a>
               <Link
-                to="/about-ipv6"
+                to="/AboutIPv6"
                 className="px-6 py-3 bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition duration-300 shadow-md dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 Learn More
