@@ -38,18 +38,17 @@ function App() {
     }
   }, [darkMode]);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
-
-  const handleLogout = async () => {
+  // Updated logout accepts optional showSuccess flag (default true)
+  const handleLogout = async (showSuccess = true) => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Error logging out:', error);
         toast.error('Failed to log out');
       } else {
-        toast.success('Logged out successfully');
+        if (showSuccess) {
+          toast.success('Logged out successfully');
+        }
         setSession(null);
       }
     } catch (error) {
@@ -57,6 +56,11 @@ function App() {
       toast.error('An unexpected error occurred during logout');
     }
   };
+  // Add this function BEFORE the return statement (before JSX)
+const toggleDarkMode = () => {
+  setDarkMode(!darkMode);
+};
+
 
   if (loading) {
     return (

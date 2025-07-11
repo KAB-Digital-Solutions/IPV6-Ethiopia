@@ -8,7 +8,6 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
   const [showConnectionTest, setShowConnectionTest] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
@@ -34,74 +33,41 @@ const Login = () => {
     checkUser();
   }, [navigate]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      // First, check if the Supabase client is properly initialized
-      if (!supabase) {
-        throw new Error('Supabase client not initialized');
-      }
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password: password.trim(),
+    });
 
-      // Attempt to sign in with retry logic
-      const maxRetries = 3;
-      let lastError = null;
+    if (error) throw error;
 
-      for (let i = 0; i < maxRetries; i++) {
-        try {
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: email.trim(),
-            password: password.trim(),
-          });
+    const user = data?.user;
+    if (!user) throw new Error('No user data found.');
 
-          if (error) {
-            throw error;
-          }
+    const appMetadata =
+      user.user_metadata?.app || user.raw_user_meta_data?.app;
 
-          if (data?.user) {
-            toast.success('Logged in successfully!');
-            navigate('/'); // Navigate to dashboard
-            return;
-          }
-        } catch (error) {
-          lastError = error;
-          if (error.message.includes('Failed to fetch')) {
-            // Only retry on network errors
-            if (i < maxRetries - 1) {
-              setRetryCount(i + 1);
-              await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // Exponential backoff
-              continue;
-            }
-          }
-          throw error;
-        }
-      }
-
-      if (lastError) {
-        throw lastError;
-      }
-    } catch (error) {
-      console.error('Login error details:', error);
-      let errorMessage = 'Failed to login. ';
-      
-      if (error.message.includes('Invalid login credentials')) {
-        errorMessage += 'Please check your email and password.';
-      } else if (error.message.includes('Email not confirmed')) {
-        errorMessage += 'Please confirm your email address.';
-      } else if (error.message.includes('Failed to fetch')) {
-        errorMessage += `Network error. Please check your internet connection. (Attempt ${retryCount + 1}/3)`;
-        setShowConnectionTest(true);
-      } else {
-        errorMessage += error.message || 'Please try again.';
-      }
-      
-      toast.error(errorMessage);
-    } finally {
-      setLoading(false);
-      setRetryCount(0);
+    if (appMetadata !== 'ipv6et-admin') {
+      // Sign out right away without navigating
+      await supabase.auth.signOut();
+      throw new Error('Access denied: You are not authorized.');
     }
-  };
+
+    // ONLY navigate if authorized
+    toast.success('Logged in successfully!');
+    navigate('/');
+
+  } catch (error) {
+    toast.error(error.message || 'Failed to login.');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -283,4 +249,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;
