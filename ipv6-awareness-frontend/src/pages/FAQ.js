@@ -289,7 +289,7 @@ function FAQ() {
               </p>
               <div className="space-y-2">
                 <p className="text-gray-600 dark:text-gray-300">
-                  Email: support@ipv6forum.org
+                  Email: contact@ipv6et.org
                 </p>
                 <p className="text-gray-600 dark:text-gray-300">
                   Visit our <a href="/contact" className="text-[#00C389] hover:underline">Contact page</a> for more ways to reach us.

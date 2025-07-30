@@ -10,12 +10,54 @@ function BlogPost() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Static press release post
+  const pressReleasePost = {
+    id: 'press-release-ethiopia-ipv6-council',
+    title: 'Ethiopia IPv6 Council Has Been Founded',
+    short_description: 'The IPv6 Forum welcomes the formation of a new IPv6 initiative with the establishment of the Ethiopia IPv6 Council under the leadership of Dr. Zelalem Wudeneh Mengistu.',
+    full_description: `
+      <h2>Press Release</h2>
+      <h3>Ethiopia IPv6 Council Has Been Founded</h3>
+      <p><strong>Addis Ababa/Luxembourg, 29.7, 2025</strong> - The IPv6 Forum welcomes the formation of a new IPv6 initiative with the establishment of the Ethiopia IPv6 Council under the leadership of Dr. Zelalem Wudeneh Mengistu.</p>
+      
+      <blockquote>
+        "The Ethiopia IPv6 Council will invite key stakeholders from government, industry and academia from Central Asia to work jointly on the Ethiopia IPv6 roadmap milestones with collaborative vision for Ethiopia and Central Asia to focus its efforts to achieve the adoption the New Internet world based on IPv6" stated Dr. Zelalem, President, Ethiopia IPv6 Council
+      </blockquote>
+      
+      <p>The prime objective of the Ethiopia IPv6 Council and its members is to promote deployment and coordinated uptake of the Internet Protocol version 6 (IPv6) with support from industry, education, research communities and government agencies enabling equitable access to technology and knowledge.</p>
+      
+      <blockquote>
+        "The Ethiopia IPv6 Council has been created to extend to the Uzbekistan Internet community a strong voice and representation in the new Internet world to create momentum in deploying IPv6 and gradually sunset IPv4," stated Latif Ladid, IPv6 Forum, Founder & President.
+      </blockquote>
+      
+      <h4>About the Ethiopia IPv6 Council</h4>
+      <p>The Ethiopia IPv6 Council is a chapter of the IPv6 Forum dedicated to the advancement and promotion of IPv6 best practices and lessons learned. Comprised of individual members, as opposed to corporate sponsors, its mission is to provide technical leadership and innovative thought for the successful integration of IPv6 into all facets of networking and telecommunications infrastructure, present and future.</p>
+      
+      <p>The Ethiopia Council collaborates within the IPv6 Forum with other national based councils in creating a peer reviewed compendium of recommended IPv6 specific standards and deployment best practices.</p>
+      
+      <hr>
+      <p><strong>Organization Contact:</strong><br>
+      President: Dr. Zelalem</p>
+    `,
+    author: 'IPv6 Forum',
+    published_on: '2025-07-29',
+    category: 'News',
+    image_url: null
+  };
+
   useEffect(() => {
     fetchBlogPost();
   }, [id]);
 
   async function fetchBlogPost() {
     try {
+      // Check if it's the static press release post
+      if (id === 'press-release-ethiopia-ipv6-council') {
+        setPost(pressReleasePost);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('ipv6_blog_posts')
         .select('*')
@@ -119,9 +161,10 @@ function BlogPost() {
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
               {post.short_description}
             </p>
-            <div className="text-gray-700 dark:text-gray-300">
-              {post.full_description}
-            </div>
+            <div 
+              className="text-gray-700 dark:text-gray-300"
+              dangerouslySetInnerHTML={{ __html: post.full_description }}
+            />
           </div>
         </article>
       </div>

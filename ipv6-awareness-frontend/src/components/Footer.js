@@ -31,7 +31,7 @@ function Footer() {
   };
 
   const socialLinks = [
-    { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ipv6-ethiopia-a37367371/', icon: <FaLinkedinIn size={24} /> },
+    { name: 'LinkedIn', url: 'https://www.linkedin.com/groups/13348117/', icon: <FaLinkedinIn size={24} /> },
     { name: 'Facebook', url: 'https://web.facebook.com/people/IP-Ethiopia/pfbid0KzrtjAg2agW1PiiTGF8fvswwLsLvXpWZ7VEMqGuwpBgKYi9ARn7tAjtQUnSCD4Fml/', icon: <FaFacebookF size={24} /> },
   ];
 

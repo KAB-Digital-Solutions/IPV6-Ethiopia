@@ -144,7 +144,7 @@ const Contact = () => {
               <div className="pt-4">
                 <h3 className="text-sm sm:text-base font-semibold text-black dark:text-white mb-3">Follow Us</h3>
                 <div className="flex gap-3">
-                  <a href="https://www.linkedin.com/in/ipv6-ethiopia-a37367371/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#00C389]/10 flex items-center justify-center text-[#00C389] hover:bg-[#00C389] hover:text-white transition" aria-label="LinkedIn">
+                  <a href="https://www.linkedin.com/groups/13348117/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#00C389]/10 flex items-center justify-center text-[#00C389] hover:bg-[#00C389] hover:text-white transition" aria-label="LinkedIn">
                     <FaLinkedin className="text-base sm:text-lg" />
                   </a>
                   <a href="https://web.facebook.com/people/IP-Ethiopia/pfbid0KzrtjAg2agW1PiiTGF8fvswwLsLvXpWZ7VEMqGuwpBgKYi9ARn7tAjtQUnSCD4Fml/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#00C389]/10 flex items-center justify-center text-[#00C389] hover:bg-[#00C389] hover:text-white transition" aria-label="Facebook">
