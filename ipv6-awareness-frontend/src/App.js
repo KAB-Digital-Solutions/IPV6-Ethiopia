@@ -16,6 +16,7 @@ import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import IPv6Dashboard from './pages/IPv6Dashboard';
 import BlogPost from './pages/BlogPost';
+import IPv6ETCouncil from './pages/IPv6ETCouncil';
 
 
 // Company Pages
@@ -104,6 +105,7 @@ function App() {
                   {/* Main Navigation - Matches Navbar */}
                   <Route path="/" element={<Home />} />
                   <Route path="/AboutIPv6" element={<AboutIPv6 />} />
+                  <Route path="/IPv6ETCouncil" element={<IPv6ETCouncil />} />
                   <Route path="/Resources" element={<Resources />} />
                   <Route path="/Events" element={<Events />} />
                   <Route path="/GetInvolved" element={<GetInvolved />} />

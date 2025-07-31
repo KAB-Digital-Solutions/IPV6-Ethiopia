@@ -10,6 +10,7 @@ function Footer() {
   const footerLinks = {
     company: [
       { label: 'About IPv6', path: '/AboutIPv6' },
+      { label: 'IPv6 ET Council', path: '/IPv6ETCouncil' },
       { label: 'Our Mission', path: '/OurMission' },
     ],
     resources: [
