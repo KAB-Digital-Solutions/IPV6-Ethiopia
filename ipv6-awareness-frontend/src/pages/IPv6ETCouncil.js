@@ -64,7 +64,7 @@ function IPv6ETCouncil() {
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Hero Section - Mobile Responsive */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-8">
         {/* Background with geometric patterns */}
         <div className="absolute inset-0 bg-gradient-to-br from-white via-[#00C389]/5 to-[#00C389]/10 dark:from-black dark:via-[#00C389]/10 dark:to-[#00C389]/20">
           <div className="absolute top-0 left-0 w-full h-full">
@@ -84,15 +84,15 @@ function IPv6ETCouncil() {
               transition={{ duration: 1 }}
               className="relative w-full max-w-6xl"
             >
-              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 shadow-2xl border border-gray-200 dark:border-gray-700 transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[500px] sm:min-h-[600px]">
-                  {/* Left Content - Mobile Responsive */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, delay: 0.3 }}
-                    className="order-2 lg:order-1"
-                  >
+                             <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-8 shadow-2xl border border-gray-200 dark:border-gray-700 transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                 <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center min-h-[400px] sm:min-h-[500px] lg:min-h-[450px]">
+                                     {/* Left Content - Mobile Responsive */}
+                   <motion.div
+                     initial={{ opacity: 0, x: -30 }}
+                     animate={{ opacity: 1, x: 0 }}
+                     transition={{ duration: 0.8, delay: 0.3 }}
+                     className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left"
+                   >
                     <div className="flex items-center mb-4 sm:mb-6">
                       <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-[#00C389] to-[#009C6B] rounded-xl sm:rounded-2xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
                         <FaNetworkWired className="text-white text-lg sm:text-2xl" />
@@ -132,21 +132,21 @@ function IPv6ETCouncil() {
                     </div>
                   </motion.div>
 
-                                     {/* Right Image - Mobile Responsive */}
-                   <motion.div
-                     initial={{ opacity: 0, x: 30 }}
-                     animate={{ opacity: 1, x: 0 }}
-                     transition={{ duration: 1, delay: 0.5 }}
-                     className="flex justify-center lg:justify-end order-1 lg:order-2 mb-12 lg:mb-0 mt-8 lg:mt-0"
-                   >
+                                                        {/* Right Image - Mobile Responsive */}
+                    <motion.div
+                      initial={{ opacity: 0, x: 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 1, delay: 0.5 }}
+                      className="flex justify-center order-1 lg:order-2 mb-12 lg:mb-0 mt-8 lg:mt-0"
+                    >
                     <div className="relative">
                       <div className="absolute inset-0 bg-gradient-to-r from-[#00C389]/20 to-[#009C6B]/20 rounded-2xl sm:rounded-3xl transform rotate-3"></div>
-                      <div className="relative bg-white/50 dark:bg-gray-800/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border border-gray-200 dark:border-gray-700">
-                        <img 
-                          src={ipv6ForumLogo} 
-                          alt="IPv6 Forum Logo" 
-                          className="h-40 sm:h-48 md:h-56 lg:h-64 xl:h-72 w-auto object-contain drop-shadow-2xl"
-                        />
+                                             <div className="relative bg-white/50 dark:bg-gray-800/50 rounded-2xl sm:rounded-3xl p-2 sm:p-4 md:p-6 shadow-2xl border border-gray-200 dark:border-gray-700">
+                                                 <img 
+                           src={ipv6ForumLogo} 
+                           alt="IPv6 Forum Logo" 
+                           className="h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 w-auto object-contain drop-shadow-2xl"
+                         />
                         <motion.div
                           className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 w-6 h-6 sm:w-8 sm:h-8 bg-[#00C389] rounded-full flex items-center justify-center"
                           animate={{ scale: [1, 1.5, 1] }}
