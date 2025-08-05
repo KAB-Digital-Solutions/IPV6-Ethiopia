@@ -16,13 +16,21 @@ function BlogPost() {
 
   async function fetchBlogPost() {
     try {
+      console.log('Fetching blog post with ID:', id); // Debug log
       const { data, error } = await supabase
         .from('ipv6_blog_posts')
         .select('*')
         .eq('id', id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error); // Debug log
+        throw error;
+      }
+      
+      console.log('Fetched blog post:', data); // Debug log
+      console.log('Full description from database:', data?.full_description); // Debug log
+      console.log('Full description length:', data?.full_description?.length); // Debug log
       setPost(data);
     } catch (error) {
       console.error('Error fetching blog post:', error);
@@ -119,10 +127,16 @@ function BlogPost() {
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
               {post.short_description}
             </p>
-            <div 
-              className="text-gray-700 dark:text-gray-300"
-              dangerouslySetInnerHTML={{ __html: post.full_description }}
-            />
+            {post.full_description ? (
+              <div 
+                className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg [&>h1]:text-4xl [&>h1]:font-bold [&>h1]:text-gray-900 dark:[&>h1]:text-white [&>h1]:mt-8 [&>h1]:mb-4 [&>h2]:text-3xl [&>h2]:font-semibold [&>h2]:text-gray-900 dark:[&>h2]:text-white [&>h2]:mt-6 [&>h2]:mb-3 [&>h3]:text-2xl [&>h3]:font-semibold [&>h3]:text-gray-900 dark:[&>h3]:text-white [&>h3]:mt-6 [&>h3]:mb-3 [&>h4]:text-xl [&>h4]:font-semibold [&>h4]:text-gray-900 dark:[&>h4]:text-white [&>h4]:mt-4 [&>h4]:mb-2 [&>p]:mb-6 [&>p]:leading-relaxed [&>ul]:mb-6 [&>ul]:pl-8 [&>ol]:mb-6 [&>ol]:pl-8 [&>li]:mb-2 [&>li]:leading-relaxed [&>ul>li]:list-disc [&>ol>li]:list-decimal [&>blockquote]:border-l-4 [&>blockquote]:border-[#00C389] [&>blockquote]:pl-4 [&>blockquote]:my-8 [&>blockquote]:italic [&>blockquote]:text-gray-600 dark:[&>blockquote]:text-gray-400 [&>a]:text-[#00C389] [&>a]:underline [&>a:hover]:text-[#00a676] [&>strong]:font-semibold [&>em]:italic [&>code]:bg-gray-100 dark:[&>code]:bg-gray-700 [&>code]:px-2 [&>code]:py-1 [&>code]:rounded [&>code]:text-sm [&>code]:font-mono [&>pre]:bg-gray-100 dark:[&>pre]:bg-gray-700 [&>pre]:p-4 [&>pre]:rounded-lg [&>pre]:overflow-x-auto [&>pre]:my-6 [&>img]:max-w-full [&>img]:h-auto [&>img]:rounded-lg [&>img]:my-6 [&>table]:w-full [&>table]:border-collapse [&>table]:my-6 [&>th]:border [&>th]:border-gray-300 dark:[&>th]:border-gray-600 [&>th]:p-3 [&>th]:text-left [&>th]:bg-gray-50 dark:[&>th]:bg-gray-700 [&>th]:font-semibold [&>td]:border [&>td]:border-gray-300 dark:[&>td]:border-gray-600 [&>td]:p-3 [&>td]:text-left"
+                dangerouslySetInnerHTML={{ __html: post.full_description }}
+              />
+            ) : (
+              <div className="text-gray-500 dark:text-gray-400 italic">
+                No content available for this blog post.
+              </div>
+            )}
           </div>
         </article>
       </div>

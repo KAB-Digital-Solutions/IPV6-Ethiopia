@@ -4,6 +4,16 @@ import { PlusIcon, PencilIcon, TrashIcon, PhotoIcon, DocumentTextIcon, TagIcon, 
 import toast from 'react-hot-toast';
 import DeleteConfirmation from '../components/DeleteConfirmation';
 
+// Custom CSS for date picker colors
+const datePickerStyles = `
+  .date-picker-black::-webkit-calendar-picker-indicator {
+    filter: brightness(0) !important;
+  }
+  .dark .date-picker-black::-webkit-calendar-picker-indicator {
+    filter: brightness(1) !important;
+  }
+`;
+
 function Resources() {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -273,6 +283,7 @@ function Resources() {
 
   return (
     <div className="space-y-6 p-6">
+      <style>{datePickerStyles}</style>
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -513,7 +524,7 @@ function Resources() {
                   type="date"
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full pl-10 px-4 py-2 rounded-lg border border-gray-300 dark:border-dark-border bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                  className="w-full pl-10 px-4 py-2 rounded-lg border border-gray-300 dark:border-dark-border bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors date-picker-black"
                 />
               </div>
             </div>

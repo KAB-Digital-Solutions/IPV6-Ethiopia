@@ -1,8 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { PlusIcon, PencilIcon, TrashIcon, PhotoIcon, CalendarIcon, UserIcon, TagIcon, BookOpenIcon, QueueListIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import DeleteConfirmation from '../components/DeleteConfirmation';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
+// Custom CSS for date picker colors
+const datePickerStyles = `
+  .date-picker-black::-webkit-calendar-picker-indicator {
+    filter: brightness(0) !important;
+  }
+  .dark .date-picker-black::-webkit-calendar-picker-indicator {
+    filter: brightness(1) !important;
+  }
+`;
 
 function BlogPosts() {
   const [posts, setPosts] = useState([]);
@@ -24,23 +36,100 @@ function BlogPosts() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
+  const quillRef = useRef(null);
 
   const categories = ['news', 'tutorials', 'case-studies'];
 
   useEffect(() => {
     fetchPosts();
+    // Test database connection
+    const testConnection = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('ipv6_blog_posts')
+          .select('count')
+          .limit(1);
+        
+        if (error) {
+          console.error('Database connection test failed:', error);
+        } else {
+          console.log('Database connection successful');
+        }
+      } catch (error) {
+        console.error('Connection test failed:', error);
+      }
+    };
+    
+    testConnection();
+    
+    // Test insert functionality
+    const testInsert = async () => {
+      try {
+        const testData = {
+          title: 'Test Post',
+          short_description: 'Test description',
+          full_description: '<p>Test content</p>',
+          category: 'news',
+          author: 'Admin',
+          published_on: new Date().toISOString().split('T')[0],
+          read_time: '5 min read'
+        };
+        
+        const { data, error } = await supabase
+          .from('ipv6_blog_posts')
+          .insert([testData])
+          .select();
+        
+        if (error) {
+          console.error('Test insert failed:', error);
+        } else {
+          console.log('Test insert successful:', data);
+          // Clean up test data
+          if (data && data[0]) {
+            await supabase
+              .from('ipv6_blog_posts')
+              .delete()
+              .eq('id', data[0].id);
+          }
+        }
+      } catch (error) {
+        console.error('Test insert error:', error);
+      }
+    };
+    
+    // Uncomment the line below to test insert functionality
+    // testInsert();
   }, []);
+
+  // Monitor form data changes
+  useEffect(() => {
+    console.log('Form data changed:', formData); // Debug log
+    console.log('Full description in form:', formData.full_description); // Debug log
+  }, [formData]);
+
+  // Monitor form open state
+  useEffect(() => {
+    if (isFormOpen && selectedPost) {
+      console.log('Form opened for editing:', selectedPost); // Debug log
+      console.log('Selected post full_description:', selectedPost.full_description); // Debug log
+    }
+  }, [isFormOpen, selectedPost]);
 
   async function fetchPosts() {
     try {
       setLoading(true);
       setError(null);
+      console.log('Fetching blog posts...'); // Debug log
       const { data, error } = await supabase
         .from('ipv6_blog_posts')
         .select('*')
         .order('published_on', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error fetching posts:', error); // Debug log
+        throw error;
+      }
+      console.log('Fetched posts:', data); // Debug log
       setPosts(data || []);
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -56,12 +145,17 @@ function BlogPosts() {
       const file = event.target.files[0];
       if (!file) return;
 
+      console.log('Uploading file:', file.name, 'Type:', type); // Debug log
+
       // Check authentication first
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError || !session) {
+        console.error('Authentication error:', sessionError); // Debug log
         toast.error('Please log in to upload files');
         return;
       }
+      
+      console.log('User authenticated:', session.user.id); // Debug log
 
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
@@ -112,7 +206,28 @@ function BlogPosts() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
+      console.log('Submitting form data:', formData); // Debug log
+      
+      // Check authentication
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) {
+        console.error('Authentication error:', sessionError); // Debug log
+        toast.error('Please log in to create blog posts');
+        return;
+      }
+      
+      console.log('User authenticated:', session.user.id); // Debug log
+      
       // Validate required fields
+      if (!formData.title || formData.title.trim() === '') {
+        throw new Error('Please enter a title');
+      }
+      if (!formData.short_description || formData.short_description.trim() === '') {
+        throw new Error('Please enter a short description');
+      }
+      if (!formData.full_description || formData.full_description.trim() === '' || formData.full_description === '<p><br></p>') {
+        throw new Error('Please enter the full description');
+      }
       if (!formData.image_url) {
         throw new Error('Please upload an image');
       }
@@ -120,11 +235,24 @@ function BlogPosts() {
         throw new Error('Please select a valid category');
       }
 
-      const { error } = await supabase
+      // Log the exact data being sent
+      console.log('Data to insert:', JSON.stringify(formData, null, 2)); // Debug log
+      console.log('Full description length:', formData.full_description?.length); // Debug log
+      console.log('Full description preview:', formData.full_description?.substring(0, 100)); // Debug log
+      
+      const { data, error } = await supabase
         .from('ipv6_blog_posts')
-        .insert([formData]);
+        .insert([formData])
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error); // Debug log
+        console.error('Error details:', error.details); // Debug log
+        console.error('Error hint:', error.hint); // Debug log
+        throw error;
+      }
+      
+      console.log('Insert successful:', data); // Debug log
 
       toast.success('Blog post created successfully');
       setFormData({
@@ -140,6 +268,7 @@ function BlogPosts() {
       });
       fetchPosts();
       setIsFormOpen(false);
+      setSelectedPost(null);
     } catch (error) {
       console.error('Error creating blog post:', error);
       toast.error(error.message || 'Failed to create blog post');
@@ -148,13 +277,60 @@ function BlogPosts() {
 
   async function handleUpdate(postData) {
     try {
+      console.log('=== UPDATE OPERATION START ==='); // Debug log
+      console.log('Updating blog post with data:', postData); // Debug log
+      console.log('Full description in postData:', postData.full_description); // Debug log
+      console.log('Full description length:', postData.full_description?.length); // Debug log
+      
+      // Check authentication
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) {
+        console.error('Authentication error:', sessionError); // Debug log
+        toast.error('Please log in to update blog posts');
+        return;
+      }
+      
+      console.log('User authenticated:', session.user.id); // Debug log
+      
+      // Validate required fields
+      if (!postData.title || postData.title.trim() === '') {
+        throw new Error('Please enter a title');
+      }
+      if (!postData.short_description || postData.short_description.trim() === '') {
+        throw new Error('Please enter a short description');
+      }
+      if (!postData.full_description || postData.full_description.trim() === '' || postData.full_description === '<p><br></p>') {
+        console.error('Full description validation failed:', postData.full_description); // Debug log
+        throw new Error('Please enter the full description');
+      }
+      if (!postData.image_url) {
+        throw new Error('Please upload an image');
+      }
+      if (!postData.category || !categories.includes(postData.category)) {
+        throw new Error('Please select a valid category');
+      }
+
       const { id, ...updates } = postData;
-      const { error } = await supabase
+      
+      // Log the exact data being sent
+      console.log('Data to update:', JSON.stringify(updates, null, 2)); // Debug log
+      console.log('Full description length:', updates.full_description?.length); // Debug log
+      console.log('Full description preview:', updates.full_description?.substring(0, 100)); // Debug log
+      
+      const { data, error } = await supabase
         .from('ipv6_blog_posts')
         .update(updates)
-        .eq('id', id);
+        .eq('id', id)
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase update error:', error); // Debug log
+        console.error('Error details:', error.details); // Debug log
+        console.error('Error hint:', error.hint); // Debug log
+        throw error;
+      }
+      
+      console.log('Update successful:', data); // Debug log
 
       toast.success('Blog post updated successfully');
       setIsFormOpen(false);
@@ -203,6 +379,7 @@ function BlogPosts() {
 
   return (
     <div className="space-y-6 p-6">
+      <style>{datePickerStyles}</style>
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -229,7 +406,19 @@ function BlogPosts() {
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
             {selectedPost ? 'Edit Blog Post' : 'Create New Blog Post'}
           </h2>
-          <form onSubmit={selectedPost ? (e) => handleUpdate({ ...formData, id: selectedPost.id }) : handleSubmit} className="space-y-6">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            console.log('Form submitted - current formData:', formData); // Debug log
+            console.log('Full description before submission:', formData.full_description); // Debug log
+            
+            if (selectedPost) {
+              const updateData = { ...formData, id: selectedPost.id };
+              console.log('Update data prepared:', updateData); // Debug log
+              handleUpdate(updateData);
+            } else {
+              handleSubmit(e);
+            }
+          }} className="space-y-6">
             {/* Title */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
@@ -263,13 +452,43 @@ function BlogPosts() {
               <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-2">
                 Full Description
               </label>
-              <textarea
-                value={formData.full_description}
-                onChange={(e) => setFormData({ ...formData, full_description: e.target.value })}
-                rows="6"
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-dark-border bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                required
-              />
+              <p className="text-xs text-gray-500 dark:text-dark-text-secondary mb-2">
+                Use the rich text editor below to format your content with headings, bullets, bold text, and more.
+              </p>
+              <div className="border border-gray-300 dark:border-dark-border rounded-lg overflow-hidden [&_.ql-toolbar]:bg-gray-50 dark:[&_.ql-toolbar]:bg-gray-700 [&_.ql-toolbar]:border-gray-300 dark:[&_.ql-toolbar]:border-gray-600 [&_.ql-container]:border-gray-300 dark:[&_.ql-container]:border-gray-600 [&_.ql-editor]:bg-white dark:[&_.ql-editor]:bg-gray-800 [&_.ql-editor]:text-gray-900 dark:[&_.ql-editor]:text-gray-100 [&_.ql-toolbar_button]:text-gray-600 dark:[&_.ql-toolbar_button]:text-gray-300 [&_.ql-toolbar_button:hover]:text-gray-900 dark:[&_.ql-toolbar_button:hover]:text-white [&_.ql-active]:text-[#00C389] [&_.ql-stroke]:stroke-gray-600 dark:[&_.ql-stroke]:stroke-gray-300 [&_.ql-fill]:fill-gray-600 dark:[&_.ql-fill]:fill-gray-300">
+                <ReactQuill
+                  ref={quillRef}
+                  key={selectedPost ? `edit-${selectedPost.id}` : 'new-post'}
+                  value={formData.full_description || ''}
+                  onChange={(value) => {
+                    console.log('ReactQuill onChange triggered'); // Debug log
+                    console.log('New value:', value); // Debug log
+                    console.log('Value length:', value?.length); // Debug log
+                    console.log('Value preview:', value?.substring(0, 100)); // Debug log
+                    setFormData(prev => {
+                      const newData = { ...prev, full_description: value };
+                      console.log('Updated formData:', newData); // Debug log
+                      return newData;
+                    });
+                  }}
+                  onBlur={() => {
+                    console.log('ReactQuill onBlur - final value:', formData.full_description); // Debug log
+                  }}
+                  modules={{
+                    toolbar: [
+                      [{ 'header': [1, 2, 3, false] }],
+                      ['bold', 'italic', 'underline', 'strike'],
+                      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                      [{ 'color': [] }, { 'background': [] }],
+                      [{ 'align': [] }],
+                      ['link', 'image'],
+                      ['clean']
+                    ],
+                  }}
+                  placeholder="Write your blog content here..."
+                  style={{ minHeight: '200px' }}
+                />
+              </div>
             </div>
 
             {/* Category */}
@@ -381,7 +600,7 @@ function BlogPosts() {
                   type="date"
                   value={formData.published_on}
                   onChange={(e) => setFormData({ ...formData, published_on: e.target.value })}
-                  className="w-full pl-10 px-4 py-2 rounded-lg border border-gray-300 dark:border-dark-border bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors [&::-webkit-calendar-picker-indicator]:dark:invert"
+                  className="w-full pl-10 px-4 py-2 rounded-lg border border-gray-300 dark:border-dark-border bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors date-picker-black"
                   required
                 />
               </div>
@@ -411,7 +630,21 @@ function BlogPosts() {
             <div className="flex justify-end space-x-4">
               <button
                 type="button"
-                onClick={() => setIsFormOpen(false)}
+                onClick={() => {
+                  setIsFormOpen(false);
+                  setSelectedPost(null);
+                  setFormData({
+                    title: '',
+                    short_description: '',
+                    full_description: '',
+                    image_url: '',
+                    file_url: '',
+                    category: '',
+                    author: 'Admin',
+                    published_on: new Date().toISOString().split('T')[0],
+                    read_time: '5 min read'
+                  });
+                }}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-dark-text-secondary hover:text-gray-900 dark:hover:text-white"
               >
                 Cancel
@@ -447,9 +680,17 @@ function BlogPosts() {
               <div className="flex space-x-2">
                 <button
                   onClick={() => {
+                    console.log('Editing post:', post); // Debug log
+                    console.log('Post full_description:', post.full_description); // Debug log
                     setSelectedPost(post);
                     setFormData(post);
                     setIsFormOpen(true);
+                    
+                    // Force ReactQuill to reinitialize after a short delay
+                    setTimeout(() => {
+                      console.log('Form data after delay:', formData); // Debug log
+                      console.log('Selected post full_description:', post.full_description); // Debug log
+                    }, 100);
                   }}
                   className="p-2 text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
                 >
